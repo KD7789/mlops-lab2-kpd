@@ -12,6 +12,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY src/ ./src/
+COPY gunicorn.conf.py ./
 
 ARG MODEL_VERSION=local
 ARG MIN_ACCURACY=0.90
@@ -23,4 +24,4 @@ USER appuser
 
 EXPOSE 8080
 
-CMD exec gunicorn --bind 0.0.0.0:${PORT} --workers 1 --threads 8 --timeout 0 --chdir src "main:create_app()"
+CMD ["gunicorn", "--config", "/app/gunicorn.conf.py", "--chdir", "src", "main:create_app()"]
