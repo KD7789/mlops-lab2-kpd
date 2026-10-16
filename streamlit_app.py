@@ -183,9 +183,9 @@ with batch_tab:
                 for detail in body.get("details", []):
                     st.write(f"- {detail}")
             else:
-                results = table.copy()
-                results["prediction"] = [pretty_class(p["prediction"]) for p in body["predictions"]]
-                results["confidence"] = [p["confidence"] for p in body["predictions"]]
+                results = table[features].copy()
+                results.insert(0, "confidence", [p["confidence"] for p in body["predictions"]])
+                results.insert(0, "prediction", [pretty_class(p["prediction"]) for p in body["predictions"]])
                 st.dataframe(results)
                 st.download_button(
                     "Download results",
