@@ -1,16 +1,26 @@
-FROM python:3.11
+# Slim Python image (the original used the full Python image; the baseline build was 2.82 GB)
+FROM python:3.11-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PORT=8080 \
+    MODEL_DIR=/app/model
 
 WORKDIR /app
 
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY model/ ./model/
 COPY src/ ./src/
 
-#This line tells Docker that the container will listen on the port specified by the environment variable PORT
-EXPOSE $PORT 
+ARG MODEL_VERSION=local
+ARG MIN_ACCURACY=0.90
+ENV MODEL_VERSION=${MODEL_VERSION}
+RUN MIN_ACCURACY=${MIN_ACCURACY} python src/train.py
 
-CMD ["sh", "-c", "python src/main.py  --server.port $PORT"]
-# sh to allow for accesing environmental variabels like $port
-# -c to run this within the container
+RUN useradd --create-home --uid 1000 appuser
+USER appuser
+
+EXPOSE 8080
+
+CMD exec gunicorn --bind 0.0.0.0:${PORT} --workers 1 --threads 8 --timeout 0 --chdir src "main:create_app()"

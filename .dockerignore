@@ -1,0 +1,15 @@
+# Only requirements.txt and src/ are needed to build the image
+venv/
+.git/
+__pycache__/
+*.pyc
+.pytest_cache/
+model/
+tests/
+scripts/
+samples/
+README.md
+streamlit_app.py
+requirements-dashboard.txt
+requirements-dev.txt
+cloudbuild.yaml
