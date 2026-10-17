@@ -104,6 +104,11 @@ Dockerfile                builds the API image
 gunicorn.conf.py          server settings
 cloudbuild.yaml           the deploy pipeline
 requirements*.txt         Python packages (API, tests, dashboard)
+pytest.ini                pytest settings
+.dockerignore             files kept out of the Docker image
+.gcloudignore             files not uploaded to Cloud Build
+.gitignore                files kept out of git (venv/, model/)
+docs/                     screenshots used in this README
 ```
 
 The `model/` folder isn't in git. `python src/train.py` creates it.
