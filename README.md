@@ -51,7 +51,7 @@ I committed the original lab first without changes (tag `original`), then only t
 - Switched to the slim Python image and only install what the API needs (Streamlit was inside the API image before). The image went from **2.82 GB to 604 MB**.
 - The model is now trained while the image is built, instead of copying a `model.pkl` from git. This way it always matches the scikit-learn version in the image. If accuracy is below 0.90, **the build fails**, so a bad model can't be deployed.
 - Replaced Flask's development server with gunicorn.
-- Fixed the start command. Before, `docker stop` took about 10 seconds because the stop signal never reached the app. Now it takes **0.4 seconds**.
+- Changed the start command so gunicorn runs directly as the main process. `docker stop` now takes 0.4 seconds instead of 3.3.
 - The container runs as a normal user instead of root, and uses Cloud Run's `PORT` correctly (the original passed a Streamlit flag to a Flask app).
 - Added a `.dockerignore` so things like `venv/` and the tests don't end up in the image.
 
